@@ -1,0 +1,26 @@
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    width: 500px;
+    max-width: 90%;
+    margin: auto;
+    position: absolute;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modal-body .form-label {
+    font-weight: bold;
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+  

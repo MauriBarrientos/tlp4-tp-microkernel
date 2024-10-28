@@ -40,9 +40,13 @@ function CreateCinesButton() {
             <input type="number" className="form-control" />
           </div>
           <div className="mb-3 col-6">
+            <label className="form-label">Cantidad de salas:</label>
+            <input type="number" className="form-control" />
+          </div>
+          <div className="mb-3">
             <label className="form-label">Ubicacion:</label>
             <input type="text" className="form-control" />
-            </div>
+          </div>
             </div>
         </form>
       </div>

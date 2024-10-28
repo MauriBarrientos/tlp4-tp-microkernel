@@ -23,7 +23,6 @@ const ListarCines = () => {
         <h3>Cines</h3>
         <CreateCinesButton />
       </div>
-      
       <table className="table table-striped table-hover mt-3">
         <thead>
           <tr>
@@ -53,7 +52,7 @@ const ListarCines = () => {
           ))}
         </tbody>
       </table>
-    </div>
+      </div>
   );
 };
 

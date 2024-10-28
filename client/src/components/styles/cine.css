@@ -15,11 +15,14 @@
   .cine-header {
     border-bottom: 2px solid #ddd;
     padding-bottom: 10px;
+
   }
   
+
   .table thead th {
     color: #333;
     font-weight: bold;
+
   }
   
   .table tbody tr:hover {

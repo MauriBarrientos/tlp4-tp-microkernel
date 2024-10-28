@@ -1,0 +1,14 @@
+.cine{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 8px; 
+    }
+
+  .cine h3 {
+    margin: 0; 
+  }
+  

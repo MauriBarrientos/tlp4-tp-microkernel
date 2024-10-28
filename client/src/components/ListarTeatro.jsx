@@ -46,7 +46,7 @@ const ListarTeatros = () => {
                   className="btn btn-danger btn-sm"
                   onClick={() => handleDelete(teatro.id)}>
                   Borrar
-                </button>
+                </button> 
               </td>
             </tr>
           ))}

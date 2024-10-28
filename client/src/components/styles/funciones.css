@@ -1,14 +1,24 @@
-.funciones{
-    margin-top: 15px;
-    margin-bottom: 15px;
-    align-items: center;
-    display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    padding: 8px; 
-}
-
-  .funciones h3 {
-    margin: 0; 
+.funcion-header {
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+  }
+  
+  .table thead th {
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .table tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    width: 500px;
+    max-width: 90%;
+    margin: auto;
   }
   

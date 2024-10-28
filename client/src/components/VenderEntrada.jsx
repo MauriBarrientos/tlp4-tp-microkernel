@@ -28,7 +28,7 @@ function VenderEntradaButton({ funcionId }) {
 
   return (
     <div>
-      <button onClick={openModal} className="btn btn-danger btn-sm mt-1">Vender Entradas</button>
+      <button onClick={openModal} className="btn  btn-sm mt-1 botonVenta">Vender Entradas</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}

@@ -2,7 +2,6 @@ import express, { Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import { config } from "../config/config";
 
 export function setupCore(app: Express): void {
 

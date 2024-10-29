@@ -2,7 +2,7 @@
 FROM node:20.16.0
 
 # Establece el directorio de trabajo dentro del contenedor
-WORKDIR /server
+WORKDIR /app
 
 # Copia los archivos de dependencias
 COPY package*.json tsconfig.json ./
@@ -14,8 +14,5 @@ RUN npm install
 COPY . .
 
 
-# Expone el puerto en el que corre el backend
-EXPOSE 4000
-
 # Comando para ejecutar la aplicación
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

@@ -1,5 +1,6 @@
 import { sequelize } from "./database";
 import { Sequelize } from "sequelize";
+import { relation } from "./associations";
 
 
 class ConnectDataBase {
@@ -19,6 +20,7 @@ class ConnectDataBase {
     };
 
     private async initialize() {
+        relation();
         try {
             await this.connection.sync();
             console.log("Database connected");

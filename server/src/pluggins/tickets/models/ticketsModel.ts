@@ -23,6 +23,7 @@ TicketModel.init({
     seatsOccupied: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0,
     },
     price: {
         type: DataTypes.FLOAT,

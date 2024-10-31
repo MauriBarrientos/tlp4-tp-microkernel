@@ -8,6 +8,9 @@ export class EventModel extends Model {
     public description!: string;
     public date!: Date;
     public location!: string;
+    public totalSeats!: number;
+    public seatsOccupied!: number;
+    public price!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 };
@@ -33,6 +36,19 @@ EventModel.init({
     },
     location: {
         type: DataTypes.STRING,
+        allowNull: false,
+    },
+    totalSeats: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    seatsOccupied: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    price: {
+        type: DataTypes.FLOAT,
         allowNull: false,
     },
 }, 

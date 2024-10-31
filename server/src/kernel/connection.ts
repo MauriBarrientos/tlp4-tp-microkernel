@@ -22,7 +22,7 @@ class ConnectDataBase {
     private async initialize() {
         relation();
         try {
-            await this.connection.sync();
+            await this.connection.sync({ alter: true });
             console.log("Database connected");
         } catch (error) {
             console.log("Error connecting to the database", error);

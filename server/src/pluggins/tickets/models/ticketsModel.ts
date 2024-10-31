@@ -3,9 +3,9 @@ import { sequelize } from "../../../kernel/database";
 
 export class TicketModel extends Model {
     public id!: number;
-    public totalSeats!: number;
-    public seatsOccupied!: number;
+    public ticketsPurchased!: number;
     public price!: number;
+    public eventId!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 };
@@ -16,11 +16,7 @@ TicketModel.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    totalSeats: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    seatsOccupied: {
+    ticketsPurchased: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,

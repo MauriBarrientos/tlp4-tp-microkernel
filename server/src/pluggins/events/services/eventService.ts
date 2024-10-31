@@ -7,10 +7,9 @@ interface EventData {
     description: string;
     date: Date;
     location: string;
-    tickets: {
-        totalSeats: number;
-        price: number;
-    }[];
+    totalSeats: number;
+    price: number;
+
 };
 
 export class EventService {
@@ -19,14 +18,7 @@ export class EventService {
         try {
             const event = await EventModel.findOne({
                 where: { id: eventId },
-                attributes: ["id", "name", "description", "date", "location"],
-                include: [
-                    {
-                        model: TicketModel,
-                        as: "tickets",
-                        attributes: ["totalSeats", "price"],
-                    },
-                ],
+                attributes: ["id", "name", "description", "date", "location", "totalSeats", "price"],
             });
 
             if (!event) {
@@ -47,7 +39,7 @@ export class EventService {
 
     // Método para crear un evento con boletos asociados
     public async createEventWithTickets(eventData: EventData) {
-        const { name, description, date, location, tickets } = eventData;
+        const { name, description, date, location, totalSeats, price } = eventData;
 
         // Inicia una transacción para asegurar la integridad de los datos
         const transaction: Transaction | undefined = await EventModel.sequelize?.transaction();
@@ -59,18 +51,9 @@ export class EventService {
 
             // Crea el evento
             const event = await EventModel.create(
-                { name, description, date, location },
+                { name, description, date, location, totalSeats, price },
                 { transaction }
             );
-
-            // Crea los boletos asociados al evento
-            const ticketPromises = tickets.map(ticket =>
-                TicketModel.create(
-                    { ...ticket, eventId: event.id },
-                    { transaction }
-                )
-            );
-            await Promise.all(ticketPromises);
 
             // Confirma la transacción
             await transaction?.commit();

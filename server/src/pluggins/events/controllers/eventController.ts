@@ -25,10 +25,10 @@ export class EventController {
     // Método para crear un evento con boletos asociados
     public async createEventWithTickets(req: Request, res: Response) {
         
-        const { name, description, date, location, tickets } = req.body;
+        const { name, description, date, location, totalSeats, price } = req.body;
 
         try {
-            const newEvent = await EventServices.createEventWithTickets({ name, description, date, location, tickets });
+            const newEvent = await EventServices.createEventWithTickets({ name, description, date, location, totalSeats, price });
 
             res.status(201).json(newEvent);
         } catch (error: unknown) {

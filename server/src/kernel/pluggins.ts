@@ -6,4 +6,6 @@ import ticketRouter from "../pluggins/tickets/routes/ticketRoutes";
 export function loadPluggins(app: Express): void {
     app.use('/api', EventRouter);
     app.use('/api', ticketRouter);
+    
+
 };

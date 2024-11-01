@@ -10,8 +10,6 @@ const Navbar = () => {
         <span className="name">cINeee</span>
       </div>
       <ul className="navbar-links">
-      <li><Link to="/teatros" className="navbar-link">Teatros</Link></li>
-        <li><Link to="/cinemas" className="navbar-link">Cines</Link></li>
         <li><Link to="/" className="navbar-link">Funciones</Link></li>
       </ul>
     </nav>

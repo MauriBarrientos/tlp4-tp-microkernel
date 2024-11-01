@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  
+  mysql:
+    container_name: mysql_db
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: always
+    env_file:
+      - .env 
+
+  
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    restart: always
+    env_file:
+      - .env 
+
+  
+  server:
+    depends_on:
+      - mysql
+    build: .
+    ports:
+      - "4000:4000"
+    restart: always
+    environment:
+      - PORT=${PORT}
+      - DIALECT=${DIALECT}
+    env_file:
+      - .env
+
+volumes:
+  db_data:

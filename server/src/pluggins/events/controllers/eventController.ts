@@ -39,4 +39,19 @@ export class EventController {
             };
         };
     };
+
+    public async getEvents(req: Request, res: Response) {
+
+        try {
+            const events = await EventServices.getAllEvents();
+
+            res.status(200).json(events);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                res.status(400).json({ message: `Error al obtener los eventos: ${error.message}` });
+            } else {
+                res.status(400).json({ message: "Error al obtener los eventos: Error desconocido" });
+            };
+        };
+    };
 };

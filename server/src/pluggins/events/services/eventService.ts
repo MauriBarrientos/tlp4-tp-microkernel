@@ -70,4 +70,22 @@ export class EventService {
         };
     };
 
+    public async getAllEvents() {
+
+        try {
+            const events = await EventModel.findAll();
+            if (!events) {
+                throw new Error("No se encontraron eventos");
+            }
+
+            return events;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Error al obtener los eventos: ${error.message}`);
+            } else {
+                throw new Error("Error al obtener los eventos: Error desconocido");
+            };
+        };
+    };
+
 };

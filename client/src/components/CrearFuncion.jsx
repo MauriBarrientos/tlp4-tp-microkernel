@@ -9,7 +9,6 @@ function CreateFuncionButton() {
     description: '',
     date: '',
     time: '',
-    tipo: 'Cine',
     location: '',
     totalSeats: 100,
     price: 10.0,
@@ -23,7 +22,6 @@ function CreateFuncionButton() {
       description: '',
       date: '',
       time: '',
-      tipo: 'Cine',
       location: '',
       totalSeats: 100,
       price: 10.0,
@@ -68,8 +66,8 @@ function CreateFuncionButton() {
   };
 
   return (
-    <div>
-      <button onClick={openModal} className="btn btn-danger">Crear Nueva Función</button>
+    <div className='col'>
+      <button onClick={openModal} className="btn btn-danger">Crear Función</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -129,18 +127,6 @@ function CreateFuncionButton() {
               </div>
             </div>
             <div className="mb-2 row">
-            <div className=" col-6">
-              <label className="form-label">Tipo de Lugar:</label>
-              <select
-                className="form-select"
-                name="tipo"
-                value={formData.tipo}
-                onChange={handleChange}
-              >
-                <option value="Cine">Cine</option>
-                <option value="Teatro">Teatro</option>
-              </select>
-            </div>
             <div className=" col-6">
               <label className="form-label">Total de Asientos:</label>
               <input

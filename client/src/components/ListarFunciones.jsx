@@ -9,7 +9,7 @@ const ListarFunciones = () => {
   useEffect(() => {
     const fetchFunciones = async () => {
       try {
-        const response = await fetch(''); 
+        const response = await fetch('http://localhost:4000/api/events'); 
         const data = await response.json();
         setFunciones(data);
       } catch (error) {
@@ -25,7 +25,10 @@ const ListarFunciones = () => {
     <div className="container mt-4">
       <div className="funcion-header d-flex justify-content-between align-items-center">
         <h3>Funciones</h3>
+        <div  >
         <CreateFuncionButton />
+        <VenderEntradaButton />
+        </div>
       </div>
 
       {funciones.length > 0 ? (
@@ -33,28 +36,24 @@ const ListarFunciones = () => {
           <thead>
             <tr>
               <th>Película / Obra</th>
+              <th>Descripcion</th>
               <th>Fecha</th>
               <th>Horario</th>
-              <th>Tipo de Lugar</th>
-              <th>Dirección</th>
+              <th>Lugar</th>
               <th>Stock</th>
               <th>Disponibilidad</th>
-              <th>Acción</th>
             </tr>
           </thead>
           <tbody>
             {funciones.map((funcion) => (
               <tr key={funcion.id}>
                 <td>{funcion.name}</td>
+                <td>{funcion.description}</td>
                 <td>{new Date(funcion.date).toLocaleDateString()}</td>
                 <td>{new Date(funcion.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-                <td>{funcion.tipo}</td>
                 <td>{funcion.location}</td>
                 <td>{funcion.totalSeats}</td>
                 <td>{funcion.totalSeats - funcion.seatsOccupied}</td>
-                <td>
-                  <VenderEntradaButton funcionId={funcion.id} />
-                </td>
               </tr>
             ))}
           </tbody>

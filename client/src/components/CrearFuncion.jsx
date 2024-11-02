@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import './styles/crearFuncion.css';
 
-function CreateFuncionButton() {
+function CreateFuncionButton({ onFuncionCreada }) { 
   const [modalIsOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -56,6 +56,9 @@ function CreateFuncionButton() {
 
       if (response.ok) {
         alert('Función creada exitosamente');
+        if (onFuncionCreada) {
+          onFuncionCreada(); 
+        }
         closeModal();
       } else {
         alert('Error al crear la función');

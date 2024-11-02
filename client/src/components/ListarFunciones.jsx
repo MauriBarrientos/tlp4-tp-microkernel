@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import CreateFuncionButton from './CrearFuncion';
-import VenderEntradaButton from './VenderEntrada';
+import CreateFuncionButton from '../components/CrearFuncion';
+import VenderEntradaButton from '../components/VenderEntrada';
 import './styles/funciones.css';
 
 const ListarFunciones = () => {
@@ -8,7 +8,7 @@ const ListarFunciones = () => {
 
   const fetchFunciones = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/events'); 
+      const response = await fetch('http://localhost:4000/api/events');
       const data = await response.json();
       setFunciones(data);
     } catch (error) {
@@ -29,7 +29,7 @@ const ListarFunciones = () => {
       <div className="funcion-header d-flex justify-content-between align-items-center">
         <h3>Funciones</h3>
         <div>
-          <CreateFuncionButton />
+          <CreateFuncionButton onFuncionCreada={actualizarFunciones} /> 
           <VenderEntradaButton onVentaRealizada={actualizarFunciones} /> 
         </div>
       </div>

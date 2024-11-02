@@ -1,33 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import CreateFuncionButton from './CrearFuncion';
-import './styles/funciones.css';
 import VenderEntradaButton from './VenderEntrada';
+import './styles/funciones.css';
 
 const ListarFunciones = () => {
   const [funciones, setFunciones] = useState([]);
 
-  useEffect(() => {
-    const fetchFunciones = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/api/events'); 
-        const data = await response.json();
-        setFunciones(data);
-      } catch (error) {
-        console.error('Error al cargar las funciones:', error);
-      }
-    };
+  const fetchFunciones = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/events'); 
+      const data = await response.json();
+      setFunciones(data);
+    } catch (error) {
+      console.error('Error al cargar las funciones:', error);
+    }
+  };
 
+  const actualizarFunciones = () => {
+    fetchFunciones();
+  };
+
+  useEffect(() => {
     fetchFunciones();
   }, []);
-
 
   return (
     <div className="container mt-4">
       <div className="funcion-header d-flex justify-content-between align-items-center">
         <h3>Funciones</h3>
-        <div  >
-        <CreateFuncionButton />
-        <VenderEntradaButton />
+        <div>
+          <CreateFuncionButton />
+          <VenderEntradaButton onVentaRealizada={actualizarFunciones} /> 
         </div>
       </div>
 

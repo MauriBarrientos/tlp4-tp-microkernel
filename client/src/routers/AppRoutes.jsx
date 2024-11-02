@@ -5,7 +5,6 @@ import Funciones from '../views/Funciones';
 const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<Funciones />} />
-
   </Routes>
 );
 

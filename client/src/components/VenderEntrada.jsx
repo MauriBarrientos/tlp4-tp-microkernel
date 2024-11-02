@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import './styles/venderFuncion.css';
 
-function VenderEntradaButton() {
+function VenderEntradaButton({ onVentaRealizada }) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [cantidadEntradas, setCantidadEntradas] = useState(1);
   const [precio, setPrecio] = useState(0);
   const [eventos, setEventos] = useState([]); 
   const [funcionId, setFuncionId] = useState(null); 
   const [nombreFuncion, setNombreFuncion] = useState(''); 
-
 
   useEffect(() => {
     if (modalIsOpen) {
@@ -22,7 +21,6 @@ function VenderEntradaButton() {
     }
   }, [modalIsOpen]);
 
- 
   const handleEventChange = (e) => {
     const selectedEvent = eventos.find(event => event.id === parseInt(e.target.value));
     if (selectedEvent) {
@@ -32,19 +30,7 @@ function VenderEntradaButton() {
     }
   };
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-    setCantidadEntradas(1);
-    setPrecio(0);
-    setFuncionId(null);
-    setNombreFuncion('');
-  }
-
-  function handleVender() {
+  const handleVenta = async () => {
     if (!funcionId) {
       alert('Selecciona un evento antes de realizar la venta.');
       return;
@@ -56,27 +42,41 @@ function VenderEntradaButton() {
       eventId: funcionId,
     };
 
-    fetch(`http://localhost:4000/api/sell/${funcionId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(ventaData),
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log(`Venta realizada para la función con ID: ${funcionId}`);
-          closeModal();
-        } else {
-          console.error('Error en la venta');
+    try {
+      const response = await fetch(`http://localhost:4000/api/sell/${funcionId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(ventaData),
+      });
+
+      if (response.ok) {
+        console.log(`Venta realizada para la función con ID: ${funcionId}`);
+        
+       if (onVentaRealizada) {
+          onVentaRealizada();
         }
-      })
-      .catch((error) => console.error('Error en la solicitud de venta:', error));
+        closeModal();
+      } else {
+        console.error('Error en la venta');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud de venta:', error);
+    }
+  };
+
+  function closeModal() {
+    setIsOpen(false);
+    setCantidadEntradas(1);
+    setPrecio(0);
+    setFuncionId(null);
+    setNombreFuncion('');
   }
 
   return (
     <div className='col'>
-      <button onClick={openModal} className="btn btn-sm mt-1 botonVenta">Vender Entradas</button>
+      <button onClick={() => setIsOpen(true)} className="btn btn-sm mt-1 botonVenta">Vender Entradas</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -126,7 +126,7 @@ function VenderEntradaButton() {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-secondary m-2" onClick={closeModal}>Cerrar</button>
-          <button type="button" className="btn btn-success" onClick={handleVender}>Vender</button>
+          <button type="button" className="btn btn-success" onClick={handleVenta}>Vender</button>
         </div>
       </Modal>
     </div>

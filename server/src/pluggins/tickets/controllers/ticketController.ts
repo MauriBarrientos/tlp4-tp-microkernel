@@ -33,5 +33,18 @@ export class TicketController {
       }
     }
   };
+
+  public async getTickets(req: Request, res: Response) {
+    try {
+      const tickets = await ticketService.getAllTickets();
+       res.status(200).json(tickets);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+         res.status(400).json({ message: error.message });
+      } else {
+         res.status(500).json({ message: "Error al obtener los tickets: Error desconocido" });
+      };
+    };
+  };
   
 };

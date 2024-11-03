@@ -69,4 +69,20 @@ export class TicketService {
     };
   };
 
+  public async getAllTickets() {
+    try {
+      const tickets = await TicketModel.findAll();
+      if (!tickets) {
+        throw new Error("No se encontraron tickets");
+      };
+      return tickets;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Error al obtener los tickets: ${error.message}`);
+      } else {
+        throw new Error("Error al obtener los tickets: Error desconocido");
+      };
+    };
+  };
+
 };

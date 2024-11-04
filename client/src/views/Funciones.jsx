@@ -5,7 +5,7 @@ import ListarFunciones from '../components/ListarFunciones';
 const Funciones = () => (
     <>
     <Navbar />
-    <div className='container' id='main'> 
+      <div className='container' id='main'> 
         <ListarFunciones />
       </div>
     </>

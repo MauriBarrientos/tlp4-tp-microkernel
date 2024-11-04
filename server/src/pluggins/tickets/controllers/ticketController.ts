@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { TicketService } from "../services/ticketService";
+import { DiscountService } from "../../discounts/services/discountService";
 
-const ticketService = new TicketService();
+const discountService = new DiscountService();
+const ticketService = new TicketService(discountService);
 
 export class TicketController {
   public async sellTicket(req: Request, res: Response) {
@@ -9,6 +11,7 @@ export class TicketController {
       const eventId = Number(req.params.id);
       const ticketsPurchased = Number(req.body.ticketsPurchased);
       const paymentMethod = req.body.paymentMethod || "";
+      const discountPercentage = req.body.discountPercentage ? Number(req.body.discountPercentage) : undefined;
 
       if (!eventId || !ticketsPurchased) {
          res
@@ -20,6 +23,7 @@ export class TicketController {
         eventId,
         ticketsPurchased,
         paymentMethod,
+        discountPercentage,
       });
 
        res.status(200).json(ticket);

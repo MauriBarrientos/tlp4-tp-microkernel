@@ -1,19 +1,26 @@
 import { TicketModel } from "../models/ticketsModel";
 import { EventModel } from "../../events/models/eventModel";
+import { DiscountService } from "../../discounts/services/discountService";
 import { Transaction } from "sequelize";
 
 interface TicketData {
   eventId: number;
   ticketsPurchased: number;
   paymentMethod: string;
+  discountPercentage?: number;
 };
 
 export class TicketService {
-  public async sellTicket(ticketData: TicketData) {
-    const { eventId, ticketsPurchased, paymentMethod } = ticketData;
+  private discountService?: DiscountService;
 
-    const transaction: Transaction | undefined =
-      await EventModel.sequelize?.transaction();
+  constructor(discountService?: DiscountService) {
+    this.discountService = discountService;
+  }
+
+  public async sellTicket(ticketData: TicketData) {
+    const { eventId, ticketsPurchased, paymentMethod, discountPercentage } = ticketData;
+
+    const transaction: Transaction | undefined = await EventModel.sequelize?.transaction();
 
     try {
       if (!transaction) {
@@ -34,11 +41,16 @@ export class TicketService {
         throw new Error("No hay suficientes asientos disponibles");
       }
 
-      const totalPrice = event.price * ticketsPurchased;
-      if (totalPrice === undefined) {
-        throw new Error("Datos del evento incompletos");
+      // Calcula el precio total antes de aplicar descuento
+      const baseTicketPrice = event.price;
+      let totalPrice = baseTicketPrice * ticketsPurchased;
+
+      // Aplica el descuento si el servicio y el porcentaje están disponibles
+      if (this.discountService && discountPercentage) {
+        totalPrice = this.discountService.applyDiscount(totalPrice, discountPercentage);
       }
 
+      // Crea el ticket en la base de datos
       const ticket = await TicketModel.create(
         { eventId, ticketsPurchased, price: totalPrice, paymentMethod, status: "vendido" },
         { transaction }
@@ -53,9 +65,7 @@ export class TicketService {
         await transaction.commit();
       } else {
         await transaction.rollback();
-        throw new Error(
-          "Método de pago requerido para confirmar la transacción"
-        );
+        throw new Error("Método de pago requerido para confirmar la transacción");
       }
 
       return ticket;

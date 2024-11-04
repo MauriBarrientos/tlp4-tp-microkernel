@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { TicketService } from "../services/ticketService";
+import { DiscountService } from "../../discounts/services/discountService";
 
-const ticketService = new TicketService();
+// Inicializa el servicio de descuentos y pásalo a TicketService
+const discountService = new DiscountService();
+const ticketService = new TicketService(discountService);
 
 export class TicketController {
   public async sellTicket(req: Request, res: Response) {
@@ -9,42 +12,39 @@ export class TicketController {
       const eventId = Number(req.params.id);
       const ticketsPurchased = Number(req.body.ticketsPurchased);
       const paymentMethod = req.body.paymentMethod || "";
+      const discountPercentage = req.body.discountPercentage ? Number(req.body.discountPercentage) : undefined;
 
       if (!eventId || !ticketsPurchased) {
-         res
-          .status(400)
-          .json({ message: "Todos los campos son obligatorios" });
+         res.status(400).json({ message: "Todos los campos son obligatorios" });
       }
 
       const ticket = await ticketService.sellTicket({
         eventId,
         ticketsPurchased,
         paymentMethod,
+        discountPercentage,
       });
 
-       res.status(200).json(ticket);
+      res.status(200).json(ticket);
     } catch (error: unknown) {
       if (error instanceof Error) {
-         res.status(400).json({ message: error.message });
+        res.status(400).json({ message: error.message });
       } else {
-         res
-          .status(500)
-          .json({ message: "Error al vender el ticket: Error desconocido" });
+        res.status(500).json({ message: "Error al vender el ticket: Error desconocido" });
       }
     }
-  };
+  }
 
   public async getTickets(req: Request, res: Response) {
     try {
       const tickets = await ticketService.getAllTickets();
-       res.status(200).json(tickets);
+      res.status(200).json(tickets);
     } catch (error: unknown) {
       if (error instanceof Error) {
-         res.status(400).json({ message: error.message });
+        res.status(400).json({ message: error.message });
       } else {
-         res.status(500).json({ message: "Error al obtener los tickets: Error desconocido" });
-      };
-    };
-  };
-  
-};
+        res.status(500).json({ message: "Error al obtener los tickets: Error desconocido" });
+      }
+    }
+  }
+}

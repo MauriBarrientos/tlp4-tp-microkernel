@@ -15,7 +15,7 @@ export class TicketService {
   private discountService?: DiscountService;
 
   constructor(discountService?: DiscountService) {
-    this.discountService = discountService;
+    this.discountService = discountService ?? new DiscountService();
   };
 
   public async sellTicket(ticketData: TicketData) {

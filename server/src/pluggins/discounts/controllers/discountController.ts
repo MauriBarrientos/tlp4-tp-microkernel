@@ -1,26 +1,32 @@
 import { Request, Response } from "express";
+import { TicketService } from "../../tickets/services/ticketService";
 import { DiscountService } from "../services/discountService";
 
 const discountService = new DiscountService();
+const ticketService = new TicketService(discountService);
 
 export class DiscountController {
-    public applyDiscount(req: Request, res: Response): void {
+    public async applyDiscount(req: Request, res: Response): Promise<void> {
         try {
-            const basePrice = parseFloat(req.body.basePrice);
-            const discountPercentage = parseFloat(req.body.discountPercentage);
+            const eventId = Number(req.params.eventId);
+            const ticketsPurchased = Number(req.body.ticketsPurchased);
+            const paymentMethod = req.body.paymentMethod;
+            const discountPercentage = Number(req.body.discountPercentage);
 
-            if (isNaN(basePrice) || isNaN(discountPercentage)) {
-                res.status(400).json({ message: "Parámetros inválidos" });
+            if (!eventId || !ticketsPurchased || !paymentMethod || isNaN(discountPercentage)) {
+                res.status(400).json({ message: "Todos los campos son obligatorios" });
             }
 
-            const finalPrice = discountService.applyDiscount(basePrice, discountPercentage);
-            res.status(200).json({ finalPrice });
+            const ticket = await ticketService.sellTicket({
+                eventId,
+                ticketsPurchased,
+                paymentMethod,
+                discountPercentage,
+            });
+
+            res.status(201).json(ticket);
         } catch (error) {
-            if (error instanceof Error) {
-                res.status(400).json({ message: error.message });
-            } else {
-                res.status(500).json({ message: "Error desconocido" });
-            }
+            res.status(500).json({ message: error instanceof Error ? error.message : "Error desconocido" });
         }
-    }
-}
+    };
+};

@@ -11,7 +11,6 @@ export class TicketController {
       const eventId = Number(req.params.id);
       const ticketsPurchased = Number(req.body.ticketsPurchased);
       const paymentMethod = req.body.paymentMethod || "";
-      const discountPercentage = req.body.discountPercentage ? Number(req.body.discountPercentage) : undefined;
 
       if (!eventId || !ticketsPurchased) {
          res
@@ -23,7 +22,6 @@ export class TicketController {
         eventId,
         ticketsPurchased,
         paymentMethod,
-        discountPercentage,
       });
 
        res.status(200).json(ticket);

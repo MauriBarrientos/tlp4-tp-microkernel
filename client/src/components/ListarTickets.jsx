@@ -14,6 +14,24 @@ const ListarTickets = () => {
     }
   };
 
+  const concretarTicket = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/tickets/concretar/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        fetchTickets(); 
+      } else {
+        console.error('Error al concretar el ticket');
+      }
+    } catch (error) {
+      console.error('Error al concretar el ticket:', error);
+    }
+  };
+
   useEffect(() => {
     fetchTickets();
   }, []);
@@ -38,7 +56,18 @@ const ListarTickets = () => {
                 <td>{ticket.ticketsPurchased}</td>
                 <td>${ticket.price.toFixed(2)}</td>
                 <td>{ticket.paymentMethod}</td>
-                <td>{ticket.status}</td>
+                <td>
+                  {ticket.status === 'reservado' ? (
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => concretarTicket(ticket.id)}
+                    >
+                      Concretar
+                    </button>
+                  ) : (
+                    ticket.status
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

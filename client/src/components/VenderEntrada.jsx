@@ -6,16 +6,18 @@ function VenderEntradaButton({ onVentaRealizada }) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [cantidadEntradas, setCantidadEntradas] = useState(1);
   const [precio, setPrecio] = useState(0);
-  const [eventos, setEventos] = useState([]); 
-  const [funcionId, setFuncionId] = useState(null); 
-  const [nombreFuncion, setNombreFuncion] = useState(''); 
+  const [eventos, setEventos] = useState([]);
+  const [funcionId, setFuncionId] = useState(null);
+  const [nombreFuncion, setNombreFuncion] = useState('');
+  const [tipoTransaccion, setTipoTransaccion] = useState('reservar'); 
+  const [metodoPago, setMetodoPago] = useState(''); 
 
   useEffect(() => {
     if (modalIsOpen) {
       fetch('http://localhost:4000/api/events')
         .then((response) => response.json())
         .then((data) => {
-          setEventos(data); 
+          setEventos(data);
         })
         .catch((error) => console.error('Error al obtener la lista de eventos:', error));
     }
@@ -26,13 +28,13 @@ function VenderEntradaButton({ onVentaRealizada }) {
     if (selectedEvent) {
       setFuncionId(selectedEvent.id);
       setNombreFuncion(selectedEvent.name);
-      setPrecio(selectedEvent.price); 
+      setPrecio(selectedEvent.price);
     }
   };
 
   const handleVenta = async () => {
     if (!funcionId) {
-      alert('Selecciona un evento antes de realizar la venta.');
+      alert('Selecciona un evento antes de realizar la transacción.');
       return;
     }
 
@@ -40,10 +42,16 @@ function VenderEntradaButton({ onVentaRealizada }) {
       ticketsPurchased: parseInt(cantidadEntradas),
       price: parseFloat(precio),
       eventId: funcionId,
+      status: tipoTransaccion,
+      paymentMethod: tipoTransaccion === 'vender' ? metodoPago : null,
     };
 
+    const url = tipoTransaccion === 'reservar' 
+      ? `http://localhost:4000/api/reserva/${funcionId}` 
+      : `http://localhost:4000/api/sell/${funcionId}`;
+
     try {
-      const response = await fetch(`http://localhost:4000/api/sell/${funcionId}`, {
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,17 +60,17 @@ function VenderEntradaButton({ onVentaRealizada }) {
       });
 
       if (response.ok) {
-        console.log(`Venta realizada para la función con ID: ${funcionId}`);
+        console.log(`Transacción realizada para la función con ID: ${funcionId}`);
         
-       if (onVentaRealizada) {
+        if (onVentaRealizada) {
           onVentaRealizada();
         }
         closeModal();
       } else {
-        console.error('Error en la venta');
+        console.error('Error en la transacción');
       }
     } catch (error) {
-      console.error('Error en la solicitud de venta:', error);
+      console.error('Error en la solicitud de transacción:', error);
     }
   };
 
@@ -72,20 +80,22 @@ function VenderEntradaButton({ onVentaRealizada }) {
     setPrecio(0);
     setFuncionId(null);
     setNombreFuncion('');
+    setTipoTransaccion('reservar');
+    setMetodoPago('');
   }
 
   return (
     <div className='col'>
-      <button onClick={() => setIsOpen(true)} className="btn btn-sm mt-1 botonVenta">Vender Entradas</button>
+      <button onClick={() => setIsOpen(true)} className="btn btn-sm mt-1 botonVenta">Vender/Reservar</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         className="modal-content"
         overlayClassName="modal-overlay"
-        contentLabel="Vender Entradas"
+        contentLabel="Vender/Reservar Entradas"
       >
         <div className="modal-header">
-          <h5 className="modal-title">Vender Entradas para: {nombreFuncion}</h5>
+          <h5 className="modal-title">Transacción para: {nombreFuncion}</h5>
         </div>
         <hr />
         <div className="modal-body">
@@ -122,11 +132,38 @@ function VenderEntradaButton({ onVentaRealizada }) {
                 readOnly
               />
             </div>
+            <div className="mb-2 row">
+              <div className="mb-3 col-6">
+                <label className="form-label">Tipo de Transacción:</label>
+                <select 
+                  className="form-control" 
+                  value={tipoTransaccion} 
+                  onChange={(e) => setTipoTransaccion(e.target.value)}
+                >
+                  <option value="reservar">Reservar</option>
+                  <option value="vender">Vender</option>
+                </select>
+              </div>
+              {tipoTransaccion === 'vender' && (
+                <div className="mb-3 col-6">
+                  <label className="form-label">Método de Pago:</label>
+                  <select 
+                    className="form-control" 
+                    value={metodoPago} 
+                    onChange={(e) => setMetodoPago(e.target.value)}
+                  >
+                    <option value="">Seleccionar</option>
+                    <option value="tarjeta">Tarjeta</option>
+                    <option value="efectivo">Efectivo</option>
+                  </select>
+                </div>
+              )}
+            </div>
           </form>
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-secondary m-2" onClick={closeModal}>Cerrar</button>
-          <button type="button" className="btn btn-success" onClick={handleVenta}>Vender</button>
+          <button type="button" className="btn btn-success" onClick={handleVenta}>Confirmar</button>
         </div>
       </Modal>
     </div>
@@ -134,3 +171,4 @@ function VenderEntradaButton({ onVentaRealizada }) {
 }
 
 export default VenderEntradaButton;
+

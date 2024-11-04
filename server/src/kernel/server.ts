@@ -25,8 +25,8 @@ class Server {
     };
 
     public listen(): void {
-        this.app.listen(this.port, () => {
-            ConnectDataBase.getInstance();
+        this.app.listen(this.port, async () => {
+            await ConnectDataBase.getInstance();
             console.log(`Server running on port ${this.port}`);
         });
     };

@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { TicketService } from "../services/ticketService";
+import { DiscountService } from "../../discounts/services/discountService";
 
-const ticketService = new TicketService();
+const discountService = new DiscountService();
+const ticketService = new TicketService(discountService);
 
 export class TicketController {
   public async sellTicket(req: Request, res: Response) {

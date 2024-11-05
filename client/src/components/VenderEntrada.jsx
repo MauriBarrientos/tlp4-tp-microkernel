@@ -171,4 +171,3 @@ function VenderEntradaButton({ onVentaRealizada }) {
 }
 
 export default VenderEntradaButton;
-

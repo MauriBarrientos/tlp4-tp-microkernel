@@ -1,16 +1,25 @@
 import { TicketModel } from "../models/ticketsModel";
 import { EventModel } from "../../events/models/eventModel";
+import { DiscountService } from "../../discounts/services/discountService";
 import { Transaction } from "sequelize";
 
 interface TicketData {
   eventId: number;
   ticketsPurchased: number;
   paymentMethod: string;
+  discountPercentage?: number;
 };
 
 export class TicketService {
+
+  private discountService?: DiscountService;
+
+  constructor(discountService?: DiscountService) {
+    this.discountService = discountService ?? new DiscountService();
+  };
+
   public async sellTicket(ticketData: TicketData) {
-    const { eventId, ticketsPurchased, paymentMethod } = ticketData;
+    const { eventId, ticketsPurchased, paymentMethod, discountPercentage } = ticketData;
 
     const transaction: Transaction | undefined =
       await EventModel.sequelize?.transaction();
@@ -34,9 +43,11 @@ export class TicketService {
         throw new Error("No hay suficientes asientos disponibles");
       }
 
-      const totalPrice = event.price * ticketsPurchased;
-      if (totalPrice === undefined) {
-        throw new Error("Datos del evento incompletos");
+      const baseTicketPrice = event.price;
+      let totalPrice = baseTicketPrice * ticketsPurchased;
+      
+      if (discountPercentage && this.discountService) {
+        totalPrice = this.discountService.applyDiscount(totalPrice, discountPercentage);
       }
 
       const ticket = await TicketModel.create(

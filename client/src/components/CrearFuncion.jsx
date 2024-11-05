@@ -86,7 +86,7 @@ function CreateFuncionButton({ onFuncionCreada }) {
           <form>
           <div className=" row">
             <div className="col-6">
-              <label className="form-label">Película / Obra:</label>
+              <label className="form-label">Evento:</label>
               <input
                 type="text"
                 className="form-control"

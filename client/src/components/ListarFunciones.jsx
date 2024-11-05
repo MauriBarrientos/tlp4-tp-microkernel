@@ -38,7 +38,7 @@ const ListarFunciones = () => {
         <table className="table table-striped table-hover mt-3">
           <thead>
             <tr>
-              <th>Película / Obra</th>
+              <th>Funcion</th>
               <th>Descripcion</th>
               <th>Fecha</th>
               <th>Horario</th>

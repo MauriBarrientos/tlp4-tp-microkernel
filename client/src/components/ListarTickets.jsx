@@ -27,6 +27,7 @@ const ListarTickets = () => {
         <table className="table table-striped table-hover mt-3">
           <thead>
             <tr>
+              <th>Evento</th>
               <th>Tickets Comprados</th>
               <th>Precio</th>
               <th>Método de Pago</th>
@@ -36,6 +37,7 @@ const ListarTickets = () => {
           <tbody>
             {tickets.map((ticket) => (
               <tr key={ticket.id}>
+                <td>{ticket.events.name}</td>
                 <td>{ticket.ticketsPurchased}</td>
                 <td>${ticket.price.toFixed(2)}</td>
                 <td>{ticket.paymentMethod}</td>

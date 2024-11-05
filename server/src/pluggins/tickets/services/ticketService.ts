@@ -82,7 +82,17 @@ export class TicketService {
 
   public async getAllTickets() {
     try {
-      const tickets = await TicketModel.findAll();
+      const tickets = await TicketModel.findAll(
+        {
+          include: [
+            {
+              model: EventModel,
+              as: 'events',
+              attributes: ["name"]
+            }
+          ]
+        }
+      );
       if (!tickets) {
         throw new Error("No se encontraron tickets");
       };

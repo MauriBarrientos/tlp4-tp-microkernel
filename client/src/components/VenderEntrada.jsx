@@ -9,8 +9,10 @@ function VenderEntradaButton({ onVentaRealizada }) {
   const [eventos, setEventos] = useState([]);
   const [funcionId, setFuncionId] = useState(null);
   const [nombreFuncion, setNombreFuncion] = useState('');
-  const [tipoTransaccion, setTipoTransaccion] = useState('reservar'); 
-  const [metodoPago, setMetodoPago] = useState(''); 
+  const [tipoTransaccion, setTipoTransaccion] = useState('reservar');
+  const [metodoPago, setMetodoPago] = useState('');
+  const [aplicarDescuento, setAplicarDescuento] = useState(false);
+  const [descuento, setDescuento] = useState(0);
 
   useEffect(() => {
     if (modalIsOpen) {
@@ -37,19 +39,29 @@ function VenderEntradaButton({ onVentaRealizada }) {
       alert('Selecciona un evento antes de realizar la transacción.');
       return;
     }
-
+  
     const ventaData = {
       ticketsPurchased: parseInt(cantidadEntradas),
-      price: parseFloat(precio),
+      price: precio,
       eventId: funcionId,
       status: tipoTransaccion,
       paymentMethod: tipoTransaccion === 'vender' ? metodoPago : null,
     };
-
-    const url = tipoTransaccion === 'reservar' 
-      ? `http://localhost:4000/api/reserva/${funcionId}` 
-      : `http://localhost:4000/api/sell/${funcionId}`;
-
+  
+    let url;
+  
+    if (tipoTransaccion === 'reservar') {
+      url = `http://localhost:4000/api/reserva/${funcionId}`;
+    } else if (tipoTransaccion === 'vender') {
+      if (aplicarDescuento && descuento > 0) {
+        url = `http://localhost:4000/api/apply-discount/${funcionId}`;
+        ventaData.discountPercentage = descuento; 
+      } else {
+        url = `http://localhost:4000/api/sell/${funcionId}`;
+        ventaData.discountPercentage = 0; 
+      }
+    }
+  
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -58,10 +70,10 @@ function VenderEntradaButton({ onVentaRealizada }) {
         },
         body: JSON.stringify(ventaData),
       });
-
+  
       if (response.ok) {
         console.log(`Transacción realizada para la función con ID: ${funcionId}`);
-        
+  
         if (onVentaRealizada) {
           onVentaRealizada();
         }
@@ -73,8 +85,9 @@ function VenderEntradaButton({ onVentaRealizada }) {
       console.error('Error en la solicitud de transacción:', error);
     }
   };
-
-  function closeModal() {
+  
+  
+  const closeModal = () => {
     setIsOpen(false);
     setCantidadEntradas(1);
     setPrecio(0);
@@ -82,7 +95,9 @@ function VenderEntradaButton({ onVentaRealizada }) {
     setNombreFuncion('');
     setTipoTransaccion('reservar');
     setMetodoPago('');
-  }
+    setAplicarDescuento(false);
+    setDescuento(0);
+  };
 
   return (
     <div className='col'>
@@ -118,7 +133,7 @@ function VenderEntradaButton({ onVentaRealizada }) {
                 className="form-control" 
                 value={cantidadEntradas} 
                 min="1" 
-                onChange={(e) => setCantidadEntradas(e.target.value)} 
+                onChange={(e) => setCantidadEntradas(parseInt(e.target.value))} 
               />
             </div>
             <div className="mb-3">
@@ -145,25 +160,59 @@ function VenderEntradaButton({ onVentaRealizada }) {
                 </select>
               </div>
               {tipoTransaccion === 'vender' && (
-                <div className="mb-3 col-6">
-                  <label className="form-label">Método de Pago:</label>
-                  <select 
-                    className="form-control" 
-                    value={metodoPago} 
-                    onChange={(e) => setMetodoPago(e.target.value)}
-                  >
-                    <option value="">Seleccionar</option>
-                    <option value="tarjeta">Tarjeta</option>
-                    <option value="efectivo">Efectivo</option>
-                  </select>
-                </div>
+                <>
+                  <div className="mb-3 col-6">
+                    <label className="form-label">Método de Pago:</label>
+                    <select 
+                      className="form-control" 
+                      value={metodoPago} 
+                      onChange={(e) => setMetodoPago(e.target.value)}
+                    >
+                      <option value="">Seleccionar</option>
+                      <option value="tarjeta">Tarjeta</option>
+                      <option value="efectivo">Efectivo</option>
+                    </select>
+                  </div>
+                  <div className="mb-3 col-12">
+                    <label className="form-label">Aplicar Descuento:</label>
+                    <div className="form-check">
+                      <input 
+                        type="checkbox" 
+                        className="form-check-input" 
+                        checked={aplicarDescuento} 
+                        onChange={(e) => setAplicarDescuento(e.target.checked)} 
+                      />
+                      <label className="form-check-label">Sí</label>
+                    </div>
+                    {aplicarDescuento && (
+                      <div className="mb-3">
+                        <label className="form-label">Descuento:</label>
+                        <select 
+                          className="form-control" 
+                          value={descuento} 
+                          onChange={(e) => setDescuento(parseInt(e.target.value))}
+                        >
+                          <option value="0">Seleccionar Descuento</option>
+                          {Array.from({ length: 5 }, (_, i) => (i + 1) * 10).map(value => (
+                            <option key={value} value={value}>{value}%</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
             </div>
+            {aplicarDescuento && descuento > 0 && (
+              <div className="alert alert-info mt-3">
+                Descuento aplicado: {descuento}%
+              </div>
+            )}
           </form>
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-secondary m-2" onClick={closeModal}>Cerrar</button>
-          <button type="button" className="btn btn-success" onClick={handleVenta}>Confirmar</button>
+          <button type="button" className="btn btn-primary m-2" onClick={handleVenta}>Aceptar</button>
         </div>
       </Modal>
     </div>

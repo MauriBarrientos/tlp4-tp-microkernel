@@ -82,7 +82,18 @@ export class TicketService {
 
   public async getAllTickets() {
     try {
-      const tickets = await TicketModel.findAll();
+      // devuelve el ticket y el nombre del evento asociado
+      const tickets = await TicketModel.findAll(
+        {
+          include: [
+            {
+              model: EventModel,
+              as: "events",
+              attributes: ["name"],
+            },
+          ],
+        }
+      );
       if (!tickets) {
         throw new Error("No se encontraron tickets");
       };

@@ -8,7 +8,7 @@ const ticketService = new TicketService(discountService);
 export class DiscountController {
     public async applyDiscount(req: Request, res: Response): Promise<void> {
         try {
-            const eventId = Number(req.params.eventId);
+            const eventId = Number(req.params.id);
             const ticketsPurchased = Number(req.body.ticketsPurchased);
             const paymentMethod = req.body.paymentMethod;
             const discountPercentage = Number(req.body.discountPercentage);
